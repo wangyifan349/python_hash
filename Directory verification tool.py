@@ -1,8 +1,7 @@
 import os
-import sys
 import hashlib
-#使用方法  python3 hash_files.py    /path/to/directory   /path/to/output.txt       后面是保存的记录位置，前面是便利的目录，这个程序会统计目录文件的指纹到后面这个记事本中。
-# 本程序用于检查同步的文件是否正确。基本没有其他作用，这是生成的哈希表。
+
+# 计算文件的SHA256哈希值
 def hash_file(filepath):
     try:
         with open(filepath, 'rb') as f:     # 以二进制只读方式打开文件
@@ -17,7 +16,8 @@ def hash_file(filepath):
         return None
 
 # 遍历目录，并将每个文件的哈希值保存到指定的文本文件中
-def traverse_dir(dirpath, output_filepath):
+def traverse_dir(dirpath):
+    output_filepath = os.path.join(os.getcwd(), "hash_values.txt") # 生成输出文件路径
     with open(output_filepath, 'w') as f:   # 以只写方式打开输出文件
         for root, dirs, files in os.walk(dirpath):  # 遍历目录下的所有目录项
             for name in files:              # 对于每个文件
@@ -26,9 +26,11 @@ def traverse_dir(dirpath, output_filepath):
                 if hashvalue is not None:
                     line = "{}\t{}\n".format(filepath, hashvalue)  # 构造输出行
                     f.write(line)               # 写入一行到输出文件
-if __name__ == '__main__':
+                    print("{} 的哈希值为：{}".format(filepath, hashvalue)) # 输出计算位置和哈希值
 
-    if len(sys.argv) < 3:   # 如果命令行参数不足两个（程序名+目录+输出文件）
-        print("用法: {} <目录> <输出文件>".format(sys.argv[0]))
+if __name__ == '__main__':
+    dirpath = input("请输入要遍历的目录路径：")#开始接受一个路径
+    if not os.path.exists(dirpath) or not os.path.isdir(dirpath): # 检查路径是否存在并且是否为目录
+        print("输入的路径不存在或者不是一个目录。")
     else:
-        traverse_dir(sys.argv[1], sys.argv[2])
+        traverse_dir(dirpath)
