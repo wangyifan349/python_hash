@@ -4,15 +4,15 @@ import shutil
 #它在目录中寻找目录1中不存在的文件,但是目录二存在的图片，并将其复制到目录三.
 
 # 函数用于计算文件的指纹（哈希值）
-def calculate_file_hash(file_path):
-    sha256_hash = hashlib.sha256()
+def calculate_blake2b_hash(file_path):
+    blake2b_hash = hashlib.blake2b()
     with open(file_path, "rb") as f:
         while True:
             data = f.read(65536)  # 64KB缓冲区
             if not data:
                 break
-            sha256_hash.update(data)
-    return sha256_hash.hexdigest()
+            blake2b_hash.update(data)
+    return blake2b_hash.hexdigest()
 
 # 函数用于遍历目录，找出所有图片和视频文件，并记录它们的文件路径和文件指纹
 def find_image_and_video_files(directory):
